@@ -1,9 +1,12 @@
 use k256::{
-    elliptic_curve::{ops::Reduce, sec1::{FromEncodedPoint, ToEncodedPoint}},
-    AffinePoint, EncodedPoint, ProjectivePoint, Scalar, NonZeroScalar, U256,
+    elliptic_curve::{
+        ops::Reduce,
+        sec1::{FromEncodedPoint, ToEncodedPoint},
+    },
+    AffinePoint, EncodedPoint, NonZeroScalar, ProjectivePoint, Scalar, U256,
 };
-use sha3::{Digest, Keccak256};
 use rand_core::OsRng;
+use sha3::{Digest, Keccak256};
 
 /// Bob's stealth meta-address: spending keypair (k, K) + viewing keypair (v, V).
 pub struct StealthMetaAddress {
@@ -38,8 +41,7 @@ pub struct RecoveredKey {
 ///   view_tag = s[0]
 ///   s_scalar = s mod n
 fn hash_shared_secret(shared_secret: &ProjectivePoint) -> (Scalar, u8) {
-    let encoded = shared_secret.to_affine()
-        .to_encoded_point(false);
+    let encoded = shared_secret.to_affine().to_encoded_point(false);
     let hash = Keccak256::digest(encoded.as_bytes()); // hash all 65 bytes (0x04 || x || y)
     let view_tag = hash[0];
     let scalar = <Scalar as Reduce<U256>>::reduce_bytes(&hash);
@@ -81,7 +83,8 @@ pub fn generate_meta_address() -> StealthMetaAddress {
 /// Parse a hex-encoded compressed public key (33 bytes, "02..." or "03...") into a ProjectivePoint.
 pub fn parse_pubkey_hex(hex_str: &str) -> Result<ProjectivePoint, String> {
     let bytes = hex::decode(hex_str).map_err(|e| format!("invalid hex: {e}"))?;
-    let encoded = EncodedPoint::from_bytes(&bytes).map_err(|e| format!("invalid SEC1 encoding: {e}"))?;
+    let encoded =
+        EncodedPoint::from_bytes(&bytes).map_err(|e| format!("invalid SEC1 encoding: {e}"))?;
     let affine: Option<AffinePoint> = AffinePoint::from_encoded_point(&encoded).into();
     affine
         .map(|pt| pt.into())
@@ -204,6 +207,18 @@ pub fn verify(stealth_private_key: &Scalar, stealth_pubkey: &ProjectivePoint) ->
     derived == *stealth_pubkey
 }
 
+pub fn point_to_hex(p: &ProjectivePoint) -> String {
+    hex::encode(p.to_affine().to_encoded_point(true).as_bytes())
+}
+
+pub fn scalar_to_hex(s: &Scalar) -> String {
+    hex::encode(s.to_bytes())
+}
+
+pub fn addr_to_hex(a: &[u8; 20]) -> String {
+    format!("0x{}", hex::encode(a))
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -225,7 +240,10 @@ mod tests {
         assert!(recovered.is_some(), "Bob should detect the payment");
         let recovered = recovered.unwrap();
         assert_eq!(recovered.stealth_address, output.stealth_address);
-        assert!(verify(&recovered.stealth_private_key, &output.stealth_pubkey));
+        assert!(verify(
+            &recovered.stealth_private_key,
+            &output.stealth_pubkey
+        ));
     }
 
     #[test]
@@ -269,8 +287,14 @@ mod tests {
             output.view_tag,
             &output.stealth_address,
         );
-        assert!(recovered.is_some(), "Parsed meta-address should produce valid stealth addresses");
-        assert!(verify(&recovered.unwrap().stealth_private_key, &output.stealth_pubkey));
+        assert!(
+            recovered.is_some(),
+            "Parsed meta-address should produce valid stealth addresses"
+        );
+        assert!(verify(
+            &recovered.unwrap().stealth_private_key,
+            &output.stealth_pubkey
+        ));
     }
 
     #[test]
