@@ -5,6 +5,7 @@ use alloy::providers::fillers::{
 };
 use alloy::providers::{Identity, ProviderBuilder, RootProvider, WalletProvider};
 use alloy::signers::local::PrivateKeySigner;
+use dewiz_stealth_address::stealth::StealthMetaAddress;
 use dotenvy::dotenv;
 use std::sync::Once;
 
@@ -23,6 +24,8 @@ pub struct TestApp {
     pub client_receiver: FillProvider<AppFiller, RootProvider>,
     pub client_sender: FillProvider<AppFiller, RootProvider>,
     pub erc20_destination_contract_address: Address,
+    pub stealth_key_receiver: StealthMetaAddress,
+    pub stealth_key_sender: StealthMetaAddress,
 }
 
 impl Default for TestApp {
@@ -56,10 +59,19 @@ impl TestApp {
         let signer_sender: PrivateKeySigner = private_key_sender
             .parse()
             .expect("The private key must be valid");
-        let wallet_signer_sender = EthereumWallet::from(signer_sender);
         let signer_receiver: PrivateKeySigner = private_key_receiver
             .parse()
             .expect("The private key must be valid");
+
+        // Derive stealth meta-addresses from the EOA private keys
+        let stealth_key_sender = StealthMetaAddress::from_secp256k1_nonzeroscalar(
+            signer_sender.credential().as_nonzero_scalar(),
+        );
+        let stealth_key_receiver = StealthMetaAddress::from_secp256k1_nonzeroscalar(
+            signer_receiver.credential().as_nonzero_scalar(),
+        );
+
+        let wallet_signer_sender = EthereumWallet::from(signer_sender);
         let wallet_signer_receiver = EthereumWallet::from(signer_receiver);
 
         let provider_client_receiver = ProviderBuilder::new()
@@ -74,6 +86,8 @@ impl TestApp {
             client_receiver: provider_client_receiver,
             client_sender: provider_client_sender,
             erc20_destination_contract_address: usdc_contract_address,
+            stealth_key_receiver,
+            stealth_key_sender,
         }
     }
 
