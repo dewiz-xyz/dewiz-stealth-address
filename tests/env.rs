@@ -1,8 +1,8 @@
-mod helpers;
+mod common;
 
 use alloy::primitives::Address;
 
-use helpers::TestApp;
+use common::TestApp;
 
 #[tokio::test]
 async fn test_sender_and_receiver_addresses_are_set() {

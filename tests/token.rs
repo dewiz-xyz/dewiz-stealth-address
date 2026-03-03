@@ -1,8 +1,7 @@
-#[path = "helpers.rs"]
-mod helpers;
+mod common;
 
 use alloy::primitives::Address;
-use helpers::TestApp;
+use common::TestApp;
 
 #[tokio::test]
 async fn test_usdc_correct_address() {

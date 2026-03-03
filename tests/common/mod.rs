@@ -1,3 +1,5 @@
+pub mod smartcontract;
+
 use alloy::network::{AnyNetwork, EthereumWallet, NetworkWallet};
 use alloy::primitives::Address;
 use alloy::providers::fillers::{
@@ -8,6 +10,8 @@ use alloy::signers::local::PrivateKeySigner;
 use dewiz_stealth_address::stealth::StealthMetaAddress;
 use dotenvy::dotenv;
 use std::sync::Once;
+
+use self::smartcontract::abi::ERC20::ERC20Instance;
 
 static TRACING_INIT: Once = Once::new();
 
@@ -24,6 +28,7 @@ pub struct TestApp {
     pub client_receiver: FillProvider<AppFiller, RootProvider>,
     pub client_sender: FillProvider<AppFiller, RootProvider>,
     pub erc20_destination_contract_address: Address,
+    pub erc20_attached_to_sender_wallet: ERC20Instance<FillProvider<AppFiller, RootProvider>>,
     pub stealth_key_receiver: StealthMetaAddress,
     pub stealth_key_sender: StealthMetaAddress,
 }
@@ -82,10 +87,14 @@ impl TestApp {
             .wallet(wallet_signer_sender.clone())
             .connect_http(rpc_url.parse().expect("RPC_URL must be a valid URL"));
 
+        let erc20_instance_attached_to_sender_wallet =
+            ERC20Instance::new(usdc_contract_address, provider_client_sender.clone());
+
         Self {
             client_receiver: provider_client_receiver,
             client_sender: provider_client_sender,
             erc20_destination_contract_address: usdc_contract_address,
+            erc20_attached_to_sender_wallet: erc20_instance_attached_to_sender_wallet,
             stealth_key_receiver,
             stealth_key_sender,
         }

@@ -1,3 +1,4 @@
+use alloy::primitives::Address;
 use k256::{
     elliptic_curve::{
         ops::Reduce,
@@ -71,6 +72,14 @@ pub struct StealthOutput {
     pub stealth_pubkey: ProjectivePoint,
     pub stealth_address: [u8; 20],
     pub view_tag: u8,
+}
+
+impl StealthOutput {
+    pub fn to_ethereum_address(&self) -> Address {
+        let mut addr = [0u8; 20];
+        addr.copy_from_slice(&self.stealth_address);
+        Address::from(addr)
+    }
 }
 
 /// Recovered stealth private key after scanning an announcement.
@@ -165,7 +174,7 @@ pub fn format_meta_address(meta: &StealthMetaAddress) -> String {
     )
 }
 
-/// Step 2: To generate a stealth address for Bob using his public keys.
+/// Step 2: To generate a stealth address for Receiver using his public keys.
 ///
 /// r ← random, R = r·G
 /// S = r·V                             (ECDH)
