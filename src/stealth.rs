@@ -1,4 +1,6 @@
+use alloy::network::EthereumWallet;
 use alloy::primitives::Address;
+use alloy::signers::local::PrivateKeySigner;
 use k256::{
     elliptic_curve::{
         ops::Reduce,
@@ -10,6 +12,7 @@ use rand_core::OsRng;
 use sha3::{Digest, Keccak256};
 
 /// Stealth meta-address: spending keypair (k, K) + viewing keypair (v, V).
+#[derive(Clone)]
 pub struct StealthMetaAddress {
     pub spending_key: NonZeroScalar,
     pub viewing_key: NonZeroScalar,
@@ -67,6 +70,7 @@ impl StealthMetaAddress {
 }
 
 /// Stealth output after generating a stealth address.
+#[derive(Clone)]
 pub struct StealthOutput {
     pub ephemeral_pubkey: ProjectivePoint,
     pub stealth_pubkey: ProjectivePoint,
@@ -83,10 +87,28 @@ impl StealthOutput {
 }
 
 /// Recovered stealth private key after scanning an announcement.
+#[derive(Clone)]
 pub struct RecoveredKey {
     pub stealth_private_key: Scalar,
     pub stealth_pubkey: ProjectivePoint,
     pub stealth_address: [u8; 20],
+}
+
+impl RecoveredKey {
+    pub fn to_ethereum_address(&self) -> Address {
+        let mut addr = [0u8; 20];
+        addr.copy_from_slice(&self.stealth_address);
+        Address::from(addr)
+    }
+
+    /// Build an `EthereumWallet` from the recovered stealth private key.
+    /// This wallet can sign transactions on behalf of the stealth address.
+    pub fn to_wallet(&self) -> EthereumWallet {
+        let secret_bytes = self.stealth_private_key.to_bytes();
+        let signer = PrivateKeySigner::from_slice(&secret_bytes)
+            .expect("stealth private key must be a valid secp256k1 scalar");
+        EthereumWallet::from(signer)
+    }
 }
 
 // ---------------------------------------------------------------------------

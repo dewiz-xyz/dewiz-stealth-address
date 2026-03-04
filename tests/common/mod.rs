@@ -7,6 +7,7 @@ use alloy::providers::fillers::{
 };
 use alloy::providers::{Identity, ProviderBuilder, RootProvider, WalletProvider};
 use alloy::signers::local::PrivateKeySigner;
+use alloy::transports::http::reqwest::Url;
 use dewiz_stealth_address::stealth::StealthMetaAddress;
 use dotenvy::dotenv;
 use std::sync::Once;
@@ -25,6 +26,7 @@ pub type AppFiller = JoinFill<
 
 #[allow(dead_code)]
 pub struct TestApp {
+    pub rpc_url: Url,
     pub client_receiver: FillProvider<AppFiller, RootProvider>,
     pub client_sender: FillProvider<AppFiller, RootProvider>,
     pub erc20_destination_contract_address: Address,
@@ -49,8 +51,9 @@ impl TestApp {
         });
 
         // Environment configuration
-        let rpc_url = std::env::var("RPC_URL")
+        let rpc_url_string = std::env::var("RPC_URL")
             .expect("RPC_URL must be defined in .env or as an environment variable");
+        let rpc_url: Url = rpc_url_string.parse().expect("RPC_URL must be a valid URL");
         let private_key_sender = std::env::var("PRIVATE_KEY_SENDER")
             .expect("PRIVATE_KEY_SENDER must be defined in .env or as an environment variable");
         let private_key_receiver = std::env::var("PRIVATE_KEY_RECEIVER")
@@ -81,16 +84,17 @@ impl TestApp {
 
         let provider_client_receiver = ProviderBuilder::new()
             .wallet(wallet_signer_receiver.clone())
-            .connect_http(rpc_url.parse().expect("RPC_URL must be a valid URL"));
+            .connect_http(rpc_url.clone());
 
         let provider_client_sender = ProviderBuilder::new()
             .wallet(wallet_signer_sender.clone())
-            .connect_http(rpc_url.parse().expect("RPC_URL must be a valid URL"));
+            .connect_http(rpc_url.clone());
 
         let erc20_instance_attached_to_sender_wallet =
             ERC20Instance::new(usdc_contract_address, provider_client_sender.clone());
 
         Self {
+            rpc_url,
             client_receiver: provider_client_receiver,
             client_sender: provider_client_sender,
             erc20_destination_contract_address: usdc_contract_address,
