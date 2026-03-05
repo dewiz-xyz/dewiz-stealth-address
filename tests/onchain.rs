@@ -135,7 +135,7 @@ async fn send_stealth_transaction() {
             the stealth wallet functionality for outgoing transactions...\n"
         );
 
-        let third_party_address: Address = "0x7dA2547202458D2540d64513D409A1c2bA57bA3A".parse().expect("Invalid third-party address");
+        let third_party_address: Address = "0x1dA2547202458D2540d64513D409A1c2bA57bA3B".parse().expect("Invalid third-party address");
 
         tx_receipt = bob_new_erc20_instance
             .transfer(third_party_address, test_transfer_token_value)
