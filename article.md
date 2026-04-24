@@ -34,31 +34,31 @@ We built **dewiz-stealth-address** — a Rust implementation of the complete ERC
 
 The cryptography is based on a simple but powerful idea: **Elliptic Curve Diffie-Hellman (ECDH) shared secrets.**
 
-**Setup:** A merchant publishes a stealth meta-address — essentially two public keys (spending + viewing) registered on-chain via the ERC-6538 Registry (deployed at `0x6538...6538` across 7 mainnets).
+**Setup:** a merchant publishes a stealth meta-address — essentially two public keys (spending + viewing) registered on-chain via the ERC-6538 Registry (deployed at `0x6538...6538` across 7 mainnets).
 
-**Payment:** When you make an x402 payment with USDS, instead of sending to a static address, the system generates a one-time stealth address from the merchant's public keys combined with a random ephemeral keypair. The math guarantees that **only the merchant** can derive the private key for that address.
+**Payment:** when you make an x402 payment with USDS, instead of sending to a static address, the system generates a one-time stealth address from the merchant's public keys combined with a random ephemeral keypair. The math guarantees that **only the merchant** can derive the private key for that address.
 
-**Discovery:** The merchant's scanner daemon watches ERC-5564 Announcer events (singleton at `0x5564...5564`), uses their viewing key to filter events (view tags eliminate 99.6% of non-matching events in one byte comparison), and recovers the stealth private key to access the funds.
+**Discovery:** the merchant's scanner daemon watches ERC-5564 Announcer events (singleton at [`0x55649E01B5Df198D18D95b5cc5051630cfD45564`](https://etherscan.io/address/0x55649E01B5Df198D18D95b5cc5051630cfD45564)), uses their viewing key to filter events (view tags eliminate 99.6% of non-matching events in one byte comparison), and recovers the stealth private key to access the funds.
 
 **Result:** 100 USDS payments to the same merchant appear as 100 unconnected wallets. No clustering. No profiling. No financial surveillance.
 
-The contracts are already deployed on Ethereum, Arbitrum, Base, Gnosis Chain, Optimism, Polygon, and Scroll. No new deployment needed.
+The ERC-5564 Announcer and ERC-6538 Registry contracts used for stealth addresses are already deployed on Ethereum, Arbitrum, Base, Gnosis Chain, Optimism, Polygon, and Scroll. No new stealth-address contract deployment is needed.
 
 ---
 
 ## Why This Matters for USDS Holders
 
-**If you're a trader:** Your on-chain footprint is your competitive vulnerability. Every USDS payment reveals information — which services you use, which data feeds you buy, how your strategies evolve. Stealth addresses break the information leakage chain.
+**If you're a trader:** your on-chain footprint is your competitive vulnerability. Every USDS payment reveals information — which services you use, which data feeds you buy, how your strategies evolve. Stealth addresses break the information leakage chain.
 
-**If you're a merchant or API provider:** Accepting USDS via x402 is great for cash flow. But accumulating all payments to a single wallet exposes your revenue, client count, and business relationships. With stealth addresses, your income is fragmented across unlinkable wallets that only you can find.
+**If you're a merchant or an API provider:** accepting USDS via x402 is great for cash flow. But accumulating all payments to a single wallet exposes your revenue, client count, and business relationships. With stealth addresses, your income is fragmented across unlinkable wallets that only you can find.
 
-**If you're an AI agent operator:** The x402 standard was designed for autonomous agent payments. But an AI agent making hundreds of API calls from one wallet creates the richest behavioral profile chain analysts have ever seen. Stealth addresses give your agents the same privacy you'd expect from a VPN — but for financial transactions.
+**If you're an AI agent operator:** the x402 standard was designed for autonomous agent payments. But an AI agent making hundreds of API calls from one wallet creates the richest behavioral profile chain analysts have ever seen. Stealth addresses give your agents the same privacy you'd expect from a VPN — but for financial transactions.
 
-**If you care about the Sky Ecosystem:** USDS adoption at $20B+ scale means USDS will be used for everything — payroll, subscriptions, e-commerce, micropayments. Without privacy tooling, USDS becomes a surveillance asset by default. Stealth address integration makes USDS viable for the full spectrum of real-world commerce.
+**If you care about the Sky Ecosystem:** adoption of USDS at $20B+ scale means USDS will be used for everything — payroll, subscriptions, e-commerce, micropayments. Without privacy tooling, USDS becomes a surveillance asset by default. Stealth address integration makes USDS viable for the full spectrum of real-world commerce.
 
 ---
 
-## Privacy ≠ Anonymity: The Compliance Story
+## Privacy ≠ Anonymity: the Compliance Story
 
 Let's be clear: this isn't Tornado Cash. Dewiz builds compliance-first infrastructure.
 
@@ -74,11 +74,11 @@ At Dewiz, we're also integrating this with our **Token Factory** platform (OFAC,
 
 Our implementation is production-grade Rust, built with the `alloy` Ethereum toolkit:
 
-- **Core library:** `dewiz-stealth-address` — full ERC-5564 lifecycle (Scheme ID 1: secp256k1 + view tags)
-- **Cryptographic foundation:** `k256` for curve arithmetic, `sha3` for Keccak-256
-- **Integration ready:** generates `alloy::Address` and `EthereumWallet` directly from recovered stealth keys
-- **Battle-tested:** Full round-trip on-chain integration tests (generate stealth address → send tokens → recover key → spend from stealth wallet)
-- **Zero unwrap:** All library code returns `Result` or `Option` — no panics in production
+- **Core library:** `dewiz-stealth-address` — full ERC-5564 lifecycle (Scheme ID 1: secp256k1 + one-byte view tags used to quickly filter announcements);
+- **Cryptographic foundation:** `k256` for curve arithmetic, `sha3` for Keccak-256;
+- **Integration ready:** generates `alloy::Address` and `EthereumWallet` directly from recovered stealth keys;
+- **Battle-tested:** full round-trip on-chain integration tests (generate stealth address → send tokens → recover key → spend from stealth wallet);
+- **Zero unwrap:** all library code returns `Result` or `Option` — no panics in production.
 
 The code is open source: [github.com/dewiz-xyz/dewiz-stealth-address](https://github.com/dewiz-xyz/dewiz-stealth-address)
 
@@ -88,7 +88,7 @@ The code is open source: [github.com/dewiz-xyz/dewiz-stealth-address](https://gi
 
 We're building the x402-stealth-middleware — a Rust crate with Node.js/Python FFI bindings that plugs directly into any x402 server to replace static payment addresses with per-request stealth addresses. The middleware handles stealth address generation, ERC-5564 announcement emission, and integrates with ERC-4337 paymasters to solve the gas funding problem for stealth wallets.
 
-Target networks: Base (primary — home of x402), Ethereum, Arbitrum, and Optimism.
+Target networks include Base (primary — home of x402), Ethereum, Arbitrum, and Optimism.
 
 The goal is simple: **make every USDS payment over x402 private by default.**
 
@@ -102,7 +102,7 @@ Stealth addresses + x402 = private internet-native USDS payments. That's the fut
 
 ---
 
-*Dewiz Blockchain — Infrastructure for the Sky Ecosystem*
+*Dewiz — Infrastructure for the Sky Ecosystem*
 
 🔗 [dewiz-stealth-address on GitHub](https://github.com/dewiz-xyz/dewiz-stealth-address)
 🔗 [x402 Protocol](https://www.x402.org/)
