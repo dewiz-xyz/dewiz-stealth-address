@@ -40,7 +40,7 @@ The cryptography is based on a simple but powerful idea: **Elliptic Curve Diffie
 
 **Discovery:** the merchant's scanner daemon watches ERC-5564 Announcer events (singleton at [`0x55649E01B5Df198D18D95b5cc5051630cfD45564`](https://etherscan.io/address/0x55649E01B5Df198D18D95b5cc5051630cfD45564)), uses their viewing key to filter events (view tags eliminate 99.6% of non-matching events in one byte comparison), and recovers the stealth private key to access the funds.
 
-**Result:** 100 USDS payments to the same merchant appear as 100 unconnected wallets. No clustering. No profiling. No financial surveillance.
+**Result:** 100 different payments to the same merchant appear as 100 different payments to unconnected wallets. No clustering. No profiling. No financial surveillance.
 
 The ERC-5564 Announcer and ERC-6538 Registry contracts used for stealth addresses are already deployed on Ethereum, Arbitrum, Base, Gnosis Chain, Optimism, Polygon, and Scroll. No new stealth-address contract deployment is needed.
 
@@ -65,8 +65,6 @@ Let's be clear: this isn't Tornado Cash. Dewiz builds compliance-first infrastru
 The viewing key architecture of ERC-5564 enables **selective disclosure**. A merchant can share their viewing key with auditors or regulators, giving authorized parties full visibility into all incoming payments — without making that information publicly available on-chain.
 
 This aligns with Sky Protocol's own direction. USDS includes a freeze function for regulatory compliance. Stealth addresses add a privacy layer on top of that compliance foundation — protecting legitimate users from surveillance while maintaining the ability to cooperate with authorized oversight.
-
-At Dewiz, we're also integrating this with our **Token Factory** platform (OFAC, SEC, ECB/MiCA regulatory hooks) and the **ERC-8004 Identity Registry** on Base Sepolia, enabling KYC-verified entities to use stealth addresses while remaining compliant through the identity layer.
 
 ---
 
