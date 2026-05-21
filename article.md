@@ -2,6 +2,8 @@
 
 ## How Dewiz Stealth Addresses Bring Private E-Commerce to Sky's Stablecoin via the x402 Payment Standard
 
+![Dewiz stealth-address cover image](assets/stealth-address-cover.png)
+
 ---
 
 USDS is the third-largest stablecoin in the world. With over $9 billion in circulating supply, 74% growth last year, and the Sky Frontier Foundation projecting a path to $20 billion in 2026, USDS is becoming the go-to yield-generating stablecoin for DeFi participants and institutional capital alike.
@@ -34,7 +36,7 @@ We built **dewiz-stealth-address** — a Rust implementation of the complete ERC
 
 The cryptography is based on a simple but powerful idea: **Elliptic Curve Diffie-Hellman (ECDH) shared secrets.**
 
-**Setup:** a merchant publishes a stealth meta-address — essentially two public keys (spending + viewing) registered on-chain via the ERC-6538 Registry (deployed at `0x6538...6538` across 7 mainnets).
+**Setup:** a merchant publishes a stealth meta-address — essentially two public keys (spending + viewing) registered on-chain via the ERC-6538 Registry (deployed at [`0x6538E6bf4B0eBd30A8Ea093027Ac2422ce5d6538`](https://etherscan.io/address/0x6538E6bf4B0eBd30A8Ea093027Ac2422ce5d6538) across 7 mainnets).
 
 **Payment:** when you make an x402 payment with USDS, instead of sending to a static address, the system generates a one-time stealth address from the merchant's public keys combined with a random ephemeral keypair. The math guarantees that **only the merchant** can derive the private key for that address.
 
@@ -43,6 +45,8 @@ The cryptography is based on a simple but powerful idea: **Elliptic Curve Diffie
 **Result:** 100 different payments to the same merchant appear as 100 different payments to unconnected wallets. No clustering. No profiling. No financial surveillance.
 
 The ERC-5564 Announcer and ERC-6538 Registry contracts used for stealth addresses are already deployed on Ethereum, Arbitrum, Base, Gnosis Chain, Optimism, Polygon, and Scroll. No new stealth-address contract deployment is needed.
+
+![Stealth payment flow diagram](assets/stealth-payment-flow.png)
 
 ---
 

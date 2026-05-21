@@ -1,0 +1,48 @@
+<svg width="1400" height="720" viewBox="0 0 1400 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Stealth payment flow diagram</title>
+  <desc id="desc">Diagram of an x402 USDS payment using an ERC-6538 stealth meta-address, an ephemeral keypair, an ERC-5564 announcement, and merchant scanning.</desc>
+  <rect width="1400" height="720" fill="#F7FAFC"/>
+  <rect x="60" y="64" width="1280" height="592" rx="24" fill="#FFFFFF" stroke="#D8E1EA" stroke-width="2"/>
+  <text x="100" y="130" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800">How a private x402 payment resolves</text>
+  <text x="100" y="174" fill="#536579" font-family="Inter, Arial, sans-serif" font-size="22">The payer sends USDS to a one-time address. The merchant uses their viewing key to discover and recover it.</text>
+  <g>
+    <rect x="100" y="254" width="250" height="150" rx="18" fill="#0D1B2E"/>
+    <text x="132" y="314" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Payer wallet</text>
+    <text x="132" y="356" fill="#B9CAD8" font-family="Inter, Arial, sans-serif" font-size="20">Signs x402 USDS</text>
+  </g>
+  <g>
+    <rect x="425" y="236" width="280" height="186" rx="18" fill="#EAF7F5" stroke="#75CFC3" stroke-width="2"/>
+    <text x="457" y="292" fill="#0D1B2E" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="800">Stealth generator</text>
+    <text x="457" y="334" fill="#476173" font-family="Inter, Arial, sans-serif" font-size="20">Merchant meta-address</text>
+    <text x="457" y="366" fill="#476173" font-family="Inter, Arial, sans-serif" font-size="20">+ ephemeral keypair</text>
+  </g>
+  <g>
+    <rect x="790" y="236" width="250" height="186" rx="18" fill="#EDF3FF" stroke="#8AAFFC" stroke-width="2"/>
+    <text x="822" y="292" fill="#0D1B2E" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="800">One-time address</text>
+    <text x="822" y="334" fill="#476173" font-family="Inter, Arial, sans-serif" font-size="20">Receives USDS</text>
+    <text x="822" y="366" fill="#476173" font-family="Inter, Arial, sans-serif" font-size="20">Looks unrelated</text>
+  </g>
+  <g>
+    <rect x="1110" y="254" width="190" height="150" rx="18" fill="#111827"/>
+    <text x="1142" y="314" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Merchant</text>
+    <text x="1142" y="356" fill="#B9CAD8" font-family="Inter, Arial, sans-serif" font-size="20">Recovers funds</text>
+  </g>
+  <path d="M360 330H402" stroke="#0D1B2E" stroke-width="5" stroke-linecap="round"/>
+  <path d="M388 310L408 330L388 350" stroke="#0D1B2E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M715 330H767" stroke="#0D1B2E" stroke-width="5" stroke-linecap="round"/>
+  <path d="M753 310L773 330L753 350" stroke="#0D1B2E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M1050 330H1087" stroke="#0D1B2E" stroke-width="5" stroke-linecap="round"/>
+  <path d="M1073 310L1093 330L1073 350" stroke="#0D1B2E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g>
+    <rect x="425" y="486" width="280" height="88" rx="16" fill="#FFF8E1" stroke="#F0C64F" stroke-width="2"/>
+    <text x="457" y="536" fill="#5D4A05" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">ERC-6538 Registry</text>
+    <text x="457" y="564" fill="#7B6A20" font-family="Inter, Arial, sans-serif" font-size="17">stores the meta-address</text>
+  </g>
+  <g>
+    <rect x="790" y="486" width="250" height="88" rx="16" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="822" y="536" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">ERC-5564 Announcer</text>
+    <text x="822" y="564" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="17">emits the discovery event</text>
+  </g>
+  <path d="M565 486V436" stroke="#75CFC3" stroke-width="4" stroke-dasharray="10 10"/>
+  <path d="M915 422V486" stroke="#8AAFFC" stroke-width="4" stroke-dasharray="10 10"/>
+</svg>
